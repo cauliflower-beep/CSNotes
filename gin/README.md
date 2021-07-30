@@ -1,3 +1,4 @@
 框架的优点
 
-go 常用的 web 框架有很多，比如 iris、gin、beego等等
+go 常用的 web 框架有很多，比如 iris、gin、beego等等，我们可以根据实际的业务需求选择不同的框架来开发
+
