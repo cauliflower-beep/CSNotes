@@ -90,7 +90,7 @@ DockerFile是用来构建Docker镜像的文本文件，是由一条条构建镜�
 
 官网文档：https://docs.docker.com/engine/reference/builder/
 
-由此可以看出，构建docker容器一般分为三个步骤：
+由此可以看出，构建docker容器一般分为`三个步骤`：
 
 1. 编写 DockerFile 文件
 
@@ -115,15 +115,15 @@ Docker内容基础：
 
 Docker执行DockerFile的大致流程：
 
-1. docker从基础镜像运行一个容器；
-2. 执行一条指令并对容器做出修改；
+1. docker从`基础镜像`运行一个容器；
+2. 执行一条指令并对容器做出修改(创建一个临时容器)；
 3. 执行类似docker commit的操作提交一个新的镜像层；
 4. docker再基于刚提交的镜像运行一个新容器；
 5. 执行dockerfile中的下一条指令，直到所有指令都执行完成。
 
 总结：
 
-从应用软件的角度来看，DockerFile、Docker镜像与Docker容器分别代表软件的三个不同阶段。
+从应用软件的角度来看，`DockerFile`、`Docker镜像`与`Docker容器`分别代表软件的三个不同阶段。
 
 DockerFile是软件的原材料，Docker镜像是软件的交付品，Docker容器则可以认为是软件镜像的运行态，也即依照镜像运行的容器实例。
 
@@ -135,11 +135,11 @@ DockerFile面向开发，Docker镜像成为交付标准，Docker容器则涉及�
 
 - *FROM*
 
-  基础镜像，即当前镜像是基于哪个镜像的。指定一个已经存在的镜像作为模板，第一条必须是from.
+  设置`基础镜像`，即当前镜像是基于哪个镜像的。基础镜像的本质就是一个文件系统，所有的镜像都是一个文件系统的体现。指定一个已经存在的镜像作为模板，第一条必须是from.
 
 - *MAINTAINER*
 
-  镜像维护者的姓名和邮箱地址。
+  镜像`维护者`的姓名和邮箱地址。
 
 - *RUN*
 
@@ -161,15 +161,15 @@ DockerFile面向开发，Docker镜像成为交付标准，Docker容器则涉及�
 
 - EXPOSE
 
-  当前容器对外暴露的端口。
+  当前镜像对外暴露的端口。假如我们写了一个web服务，监听80端口。此时我们在dockerfile里面暴露81端口，语法上没有任何问题，但是这样是不行的。逻辑会变成，80端口在容器中运行了，但是外界访问不到。所以写EXPOSE的时候，要留意一下程序执行在哪个端口。
 
 - WORKDIR
 
-  指定在创建容器后，终端默认登陆进来的工作目录，一个初始落脚点。
+  指定在创建容器后，终端默认登陆进来的工作目录，一个`初始落脚点`。跟 USER 类似.
 
 - USER
 
-  指定该镜像以什么样的用户去执行，如果都不指定，默认是root.
+  指定该镜像以什么样的用户去执行，如果都不指定，默认是root。
 
 - ENV
 
@@ -197,11 +197,13 @@ DockerFile面向开发，Docker镜像成为交付标准，Docker容器则涉及�
 
 - VOLUME
 
-  容器数据卷，用于数据保存和持久化工作。
+  容器数据卷，用于数据保存和持久化工作。本质是宿主机上的一个磁盘。容器会通过挂在卷去操作磁盘。
 
 - CMD
 
-  指定容器启动后要做的事情。CMD 指令的格式和 RUN 相似，也是两种格式：
+  设置容器启动命令，指定容器启动后要做的事情。CMD不会设置一个单独的镜像层，它在镜像层中是没有体现的。也就是说，`当容器启动的时候，CMD才会生效`。
+
+  CMD 指令的格式和 RUN 相似，也是两种格式：
 
   ```go
   // shell 格式
@@ -217,6 +219,10 @@ DockerFile面向开发，Docker镜像成为交付标准，Docker容器则涉及�
   DockerFile中可以有多个CMD指令，但只有最后一个生效。CMD会被docker run之后的参数替换。
 
   CMD 是在docker run时运行；RUN是在docker build时运行。
+
+- LABEL
+
+  设置镜像标签。dockerfile中的LABEL设置的是 docker inpect 命令中的 label 标签，而不是 docker image命令后面的标签 tag。
 
 - ENTRYPOINT
 
@@ -260,6 +266,9 @@ DockerFile面向开发，Docker镜像成为交付标准，Docker容器则涉及�
 | RUN           |         | ENTRYPOINT |
 | ONBUILD       |         |            |
 | .dockerignore |         |            |
+| ARG           |         |            |
+| ONBUILD       |         |            |
+| STOPSIGNAL    |         |            |
 
 
 
